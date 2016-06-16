@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import com.relayrides.pushy.apns.util.ApnsPayloadBuilder;
 import com.relayrides.pushy.apns.util.SimpleApnsPushNotification;
@@ -421,7 +422,7 @@ public class ApnsClientTest {
 
         this.server.registerToken(DEFAULT_TOPIC, testToken);
 
-        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, null, "test-payload");
+        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, DEFAULT_TOPIC, "test-payload");
         final PushNotificationResponse<SimpleApnsPushNotification> response =
                 this.client.sendNotification(pushNotification).get();
 
@@ -440,7 +441,7 @@ public class ApnsClientTest {
 
         this.server.registerToken(DEFAULT_TOPIC, testToken);
 
-        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, null, "test-payload");
+        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, DEFAULT_TOPIC, "test-payload");
         final PushNotificationResponse<SimpleApnsPushNotification> response =
                 this.client.sendNotification(pushNotification).get();
 
@@ -457,7 +458,7 @@ public class ApnsClientTest {
 
         this.server.registerToken(DEFAULT_TOPIC, testToken);
 
-        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, null, "test-payload");
+        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, DEFAULT_TOPIC, "test-payload");
         final PushNotificationResponse<SimpleApnsPushNotification> response =
                 this.client.sendNotification(pushNotification).get();
 
@@ -572,11 +573,12 @@ public class ApnsClientTest {
                 this.client.sendNotification(pushNotification).get();
 
         assertFalse(response.isAccepted());
-        assertEquals("TopicDisallowed", response.getRejectionReason());
+        assertEquals("DeviceTokenNotForTopic", response.getRejectionReason());
         assertNull(response.getTokenInvalidationTimestamp());
     }
 
     @Test
+    @Ignore("Ignored until auth tokens are implemented; see https://github.com/relayrides/pushy/issues/313 for details")
     public void testSendNotificationWithMissingTopic() throws Exception {
         final ApnsClient<SimpleApnsPushNotification> multiTopicClient = new ApnsClient<>(
                 ApnsClientTest.getSslContextForTestClient(MULTI_TOPIC_CLIENT_KEYSTORE_FILENAME, KEYSTORE_PASSWORD),
@@ -644,7 +646,7 @@ public class ApnsClientTest {
 
         this.server.registerToken(DEFAULT_TOPIC, testToken, now);
 
-        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, null, "test-payload");
+        final SimpleApnsPushNotification pushNotification = new SimpleApnsPushNotification(testToken, DEFAULT_TOPIC, "test-payload");
         final PushNotificationResponse<SimpleApnsPushNotification> response =
                 this.client.sendNotification(pushNotification).get();
 
